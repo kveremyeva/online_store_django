@@ -1,23 +1,30 @@
 from django.shortcuts import render, get_object_or_404
+from django.views.generic import TemplateView, ListView, DetailView
 
 from .models import Product
 
+class ProductListView(ListView):
+    """CBV для главной страницы со списком товаров"""
+    model = Product
+    template_name = 'home_page/home.html'
+    context_object_name = 'products'
 
-# Create your views here.
-
-def home(request):
-    products = Product.objects.all()  # ORM-запрос на получение списка продуктов
-    context = {
-        'products': products
-    }
-    return render(request, 'home_page/home.html', context)
-
-
-def contacts(request):
-    return render(request, 'home_page/contacts.html')
+    def get_queryset(self):
+        """ORM-запрос на получение списка продуктов"""
+        return Product.objects.all()
 
 
-def product_detail(request, pk):
-    """Контроллер для отображения страницы с подробной информацией о товаре"""
-    product = get_object_or_404(Product, pk=pk)
-    return render(request, 'home_page/product_detail.html', {'product': product})
+class ContactsView(TemplateView):
+    """CBV для страницы контактов"""
+    template_name = 'home_page/contacts.html'
+
+
+class ProductDetailView(DetailView):
+    """CBV для страницы с подробной информацией о товаре"""
+    model = Product
+    template_name = 'home_page/product_detail.html'
+    context_object_name = 'product'
+
+    def get_object(self, queryset=None):
+        """Получение объекта товара с обработкой 404"""
+        return get_object_or_404(Product, pk=self.kwargs['pk'])

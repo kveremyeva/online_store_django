@@ -1,0 +1,22 @@
+{% extends 'blog/blog_base.html' %}
+
+{% block title %}{{ post.title }}{% endblock %}
+
+{% block content %}
+
+<body>
+    <h1>{{ post.title }}</h1>
+    <p>{{ post.content }}</p>
+    <p>Опубликовано: {{ post.created_at }}</p>
+    <div>
+      <span class="badge bg-primary">{{ post.views_count }} просмотров</span>
+      {% if post.is_published %}
+      <span class="badge bg-success">Опубликовано</span>
+      {% else %}
+      <span class="badge bg-warning">Черновик</span>
+      {% endif %}
+    </div>
+    <a href="/blog/">← Назад к списку постов</a>
+</body>
+
+{% endblock %}
