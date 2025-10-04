@@ -1,6 +1,8 @@
-from django.shortcuts import render, get_object_or_404
-from django.views.generic import TemplateView, ListView, DetailView
+from django.shortcuts import get_object_or_404
+from django.urls import reverse_lazy
+from django.views.generic import TemplateView, ListView, DetailView, CreateView, UpdateView, DeleteView
 
+from .forms import ProductForm
 from .models import Product
 
 class ProductListView(ListView):
@@ -28,3 +30,23 @@ class ProductDetailView(DetailView):
     def get_object(self, queryset=None):
         """Получение объекта товара с обработкой 404"""
         return get_object_or_404(Product, pk=self.kwargs['pk'])
+
+class ProductCreateView(CreateView):
+    """Создание нового продукта"""
+    model = Product
+    form_class = ProductForm
+    template_name = 'home_page/product_form.html'
+    success_url = reverse_lazy('home')
+
+class ProductUpdateView(UpdateView):
+    """Редактирование существующего продукта"""
+    model = Product
+    form_class = ProductForm
+    template_name = 'home_page/product_form.html'
+    success_url = reverse_lazy('home')
+
+class ProductDeleteView(DeleteView):
+    """Удаление продукта"""
+    model = Product
+    template_name = 'home_page/product_confirm_delete.html'
+    success_url = reverse_lazy('home')
