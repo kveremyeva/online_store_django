@@ -1,9 +1,9 @@
-{% extends 'blog/blog_base.html' %}
+{% extends 'home_page/base.html' %}
 
 {% block title %}{{ post.title }}{% endblock %}
 
 {% block content %}
-
+{% include 'home_page/header.html' %}
 <body>
     <h1>{{ post.title }}</h1>
     <p>{{ post.content }}</p>
@@ -18,5 +18,5 @@
     </div>
     <a href="/blog/">← Назад к списку постов</a>
 </body>
-
+{% include 'home_page/footer.html' %}
 {% endblock %}
