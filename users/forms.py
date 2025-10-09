@@ -39,29 +39,14 @@ class CustomUserCreationForm(UserCreationForm):
 
 
 class CustomAuthenticationForm(AuthenticationForm):
+    username = forms.EmailField(label='Электронная почта')
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
-        # Очищаем все поля
-        self.fields.clear()
-
-        # Создаём поле email
-        self.fields['email'] = forms.EmailField(
-            max_length=50,
-            required=True,
-            label='Электронная почта'
-        )
-
-        # Создаём поле password
-        self.fields['password'] = forms.CharField(
-            required=True,
-            label='Пароль'
-        )
-
-        # Добавляем стили
-        self.fields['email'].widget.attrs.update({
+        self.fields['username'].widget.attrs.update({
             'class': 'form-control',
-            'placeholder': 'Введите email или имя пользователя'
+            'placeholder': 'Введите email'
         })
 
         self.fields['password'].widget.attrs.update({
