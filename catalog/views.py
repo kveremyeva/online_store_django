@@ -1,7 +1,7 @@
 from django.shortcuts import get_object_or_404
 from django.urls import reverse_lazy
 from django.views.generic import TemplateView, ListView, DetailView, CreateView, UpdateView, DeleteView
-
+from django.contrib.auth.mixins import LoginRequiredMixin
 from .forms import ProductForm
 from .models import Product
 
@@ -31,14 +31,14 @@ class ProductDetailView(DetailView):
         """Получение объекта товара с обработкой 404"""
         return get_object_or_404(Product, pk=self.kwargs['pk'])
 
-class ProductCreateView(CreateView):
+class ProductCreateView(LoginRequiredMixin, CreateView):
     """Создание нового продукта"""
     model = Product
     form_class = ProductForm
     template_name = 'home_page/product_form.html'
     success_url = reverse_lazy('home')
 
-class ProductUpdateView(UpdateView):
+class ProductUpdateView(LoginRequiredMixin, UpdateView):
     """Редактирование существующего продукта"""
     model = Product
     form_class = ProductForm

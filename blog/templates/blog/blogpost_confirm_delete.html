@@ -1,8 +1,9 @@
-{% extends 'blog/blog_base.html' %}
+{% extends 'home_page/base.html' %}
 
 {% block title %}Удаление поста - Блог{% endblock %}
 
 {% block content %}
+{% include 'home_page/header.html' %}
 <div class="container mt-4">
     <div class="row justify-content-center">
         <div class="col-md-6">
@@ -26,4 +27,5 @@
         </div>
     </div>
 </div>
+{% include 'home_page/footer.html' %}
 {% endblock %}

@@ -1,8 +1,9 @@
-{% extends 'blog/blog_base.html' %}
+{% extends 'home_page/base.html' %}
 
 {% block title %}Создание записи{% endblock %}
 
 {% block content %}
+{% include 'home_page/header.html' %}
     <div class="container mt-4">
         <h1>Блог</h1>
         <a href="{% url 'blog:post_create' %}" class="btn btn-primary mb-3">Создать запись</a>
@@ -23,4 +24,5 @@
         {% endfor %}
     </div>
     <script src="/static/js/bootstrap.bundle.min.js"></script>
+{% include 'home_page/footer.html' %}
 {% endblock %}
