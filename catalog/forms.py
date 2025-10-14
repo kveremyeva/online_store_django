@@ -18,6 +18,7 @@ class ProductForm(forms.ModelForm):
         fields = ['name', 'description',  'image', 'category', 'price', 'is_published']
 
     def __init__(self, *args, **kwargs):
+        self.user = kwargs.pop('user', None)
         super(ProductForm, self).__init__(*args, **kwargs)
 
         self.fields['name'].widget.attrs.update({
@@ -41,6 +42,8 @@ class ProductForm(forms.ModelForm):
         self.fields['is_published'].widget.attrs.update({
             'class': 'form-check-input'
         })
+
+        self.fields['is_published'].label = "Опубликовано"
 
     def clean_name(self):
         """Валидация названия продукта"""
@@ -74,3 +77,17 @@ class ProductForm(forms.ModelForm):
             raise ValidationError('Цена не может быть отрицательной. Пожалуйста, введите положительное значение.')
 
         return price
+
+    def clean_is_published(self):
+        """Кастомная валидация для поля is_published"""
+        is_published = self.cleaned_data.get('is_published')
+
+        if (self.user and
+                not self.user.has_perm('catalog.can_unpublish_product') and
+                self.instance and
+                self.instance.is_published and
+                not is_published):
+
+            raise ValidationError('У вас нет прав для снятия продукта с публикации.')
+
+        return is_published

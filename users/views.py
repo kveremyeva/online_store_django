@@ -1,4 +1,4 @@
-from django.contrib.auth.views import LoginView
+from django.contrib.auth.views import LoginView, LogoutView
 from django.urls import reverse_lazy
 from django.views.generic.edit import CreateView
 from django.core.mail import send_mail
@@ -28,3 +28,7 @@ class RegisterView(CreateView):
 class CustomLoginView(LoginView):
     template_name = 'users/login.html'
     form_class = CustomAuthenticationForm
+
+class CustomLogoutView(LogoutView):
+    template_name = 'users/logout.html'
+    next_page = reverse_lazy('users:logout')

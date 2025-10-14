@@ -9,7 +9,6 @@
 
 <div class="card">
     <div class="row g-0">
-        <!-- Изображение товара -->
         <div class="col-md-4">
             {% if product.image %}
                 <img src="{{ product.image.url }}" class="img-fluid rounded-start" alt="{{ product.name }}">
@@ -19,13 +18,15 @@
                 </div>
             {% endif %}
         </div>
-
-        <!-- Информация о товаре -->
         <div class="col-md-8">
             <div class="card-body">
                 <h1 class="card-title">{{ product.name }}</h1>
                 <p class="card-text">{{ product.description }}</p>
                 <p class="text-success fs-4">{{ product.price }} руб.</p>
+                {% if product.owner == request.user %}
+                    <a href="{% url 'catalog:product_update' product.pk %}" class="btn btn-secondary">Редактировать</a>
+                    <a href="{% url 'catalog:product_delete' product.pk %}" class="btn btn-danger">Удалить</a>
+                {% endif %}
             </div>
         </div>
     </div>
