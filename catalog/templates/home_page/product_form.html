@@ -15,7 +15,7 @@
 <form method="post" enctype="multipart/form-data">
     {% csrf_token %}
     {{ form.as_p }}
-    <button type="submit" class="btn btn-primary">Сохранить</button>
+    <button type="submit" name="create_product" class="btn btn-primary">Сохранить</button>
     <a href="{% url 'catalog:home' %}" class="btn btn-secondary">Отмена</a>
 </form>
 {% include 'home_page/footer.html' %}

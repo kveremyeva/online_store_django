@@ -113,3 +113,4 @@ DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
 
 LOGIN_REDIRECT_URL = 'catalog:home'
 LOGIN_URL='users:login'
+LOGOUT_REDIRECT_URL = 'users:logout'
