@@ -90,4 +90,5 @@ class ProductForm(forms.ModelForm):
 
             raise ValidationError('У вас нет прав для снятия продукта с публикации.')
 
+
         return is_published
