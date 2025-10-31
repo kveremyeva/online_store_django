@@ -1,0 +1,16 @@
+{% extends 'home_page/base.html' %}
+
+{% block title %}Регистрация{% endblock %}
+
+{% block content %}
+{% include 'home_page/header.html' %}
+<div class="container mt-4">
+    <h2>Регистрация</h2>
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit" class="btn btn-primary">Зарегистрироваться</button>
+    </form>
+</div>
+{% include 'home_page/footer.html' %}
+{% endblock %}

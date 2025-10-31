@@ -1,0 +1,22 @@
+{% extends 'home_page/base.html' %}
+
+{% block title %}Выход{% endblock %}
+
+{% block content %}
+{% include 'home_page/header.html' %}
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-body text-center">
+                    <h3>До свидания!</h3>
+                    <p>Вы успешно вышли из системы.</p>
+                    <a href="{% url 'catalog:home' %}" class="btn btn-primary">На главную</a>
+                    <a href="{% url 'users:login' %}" class="btn btn-secondary">Войти снова</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% include 'home_page/footer.html' %}
+{% endblock %}

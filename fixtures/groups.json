@@ -1,0 +1,12 @@
+[
+    {
+        "model": "auth.Group",
+        "pk": null,
+        "fields": {
+            "name": "Модератор продуктов",
+            "permissions": [
+                27, 37
+            ]
+        }
+    }
+]
