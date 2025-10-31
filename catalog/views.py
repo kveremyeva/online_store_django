@@ -1,11 +1,16 @@
+from django.core.cache import cache
 from django.http import HttpResponseForbidden
 from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse_lazy
+from django.utils.decorators import method_decorator
 from django.views import View
+from django.views.decorators.cache import cache_page
 from django.views.generic import TemplateView, ListView, DetailView, CreateView, UpdateView, DeleteView
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 from .forms import ProductForm
-from .models import Product
+from .models import Product, Category
+from catalog.services import get_products_by_category
+
 
 class ProductListView(ListView):
     """CBV для главной страницы со списком товаров"""
@@ -14,19 +19,36 @@ class ProductListView(ListView):
     context_object_name = 'products'
 
     def get_queryset(self):
-        """ORM-запрос на получение списка опублекованных продуктов"""
+        """ORM-запрос на получение списка опубликованных продуктов"""
         user = self.request.user
         if user.is_staff or user.has_perm('catalog.can_unpublish_product'):
-            return Product.objects.all()
+            cache_key = 'products_queryset_staff'
         else:
-            return Product.objects.filter(is_published=True)
+            cache_key = 'products_queryset_public'
+
+        queryset = cache.get(cache_key)
+        if not queryset:
+            if user.is_staff or user.has_perm('catalog.can_unpublish_product'):
+                queryset = Product.objects.all()
+            else:
+                queryset = Product.objects.filter(is_published=True)
+
+            cache.set(cache_key, queryset, 60 * 15)
+
+        return queryset
+
+    def get_context_data(self, **kwargs):
+        """Добавляем категории в контекст"""
+        context = super().get_context_data(**kwargs)
+        context['categories'] = Category.objects.filter(product__is_published=True).distinct()
+        return context
 
 
 class ContactsView(TemplateView):
     """CBV для страницы контактов"""
     template_name = 'home_page/contacts.html'
 
-
+@method_decorator(cache_page(60 * 15), name='dispatch')
 class ProductDetailView(DetailView):
     """CBV для страницы с подробной информацией о товаре"""
     model = Product
@@ -103,6 +125,7 @@ class ProductDeleteView(LoginRequiredMixin, PermissionRequiredMixin, DeleteView)
 
 
 class ProductUnpublishView(LoginRequiredMixin, PermissionRequiredMixin, View):
+    """ Публикация продукта"""
     def post(self, request, pk):
         product = get_object_or_404(Product, pk=pk)
 
@@ -114,3 +137,22 @@ class ProductUnpublishView(LoginRequiredMixin, PermissionRequiredMixin, View):
         product.save()
 
         return redirect('catalog:product_detail', pk=product.pk)
+
+
+class CategoryProductView(ListView):
+    """CBV для отображения продуктов по категории"""
+    model = Product
+    template_name = 'home_page/category_products.html'
+    context_object_name = 'products'
+
+    def get_queryset(self):
+        """Используем сервисную функцию для получения продуктов"""
+        category_id = self.kwargs['pk']
+        return get_products_by_category(category_id)
+
+    def get_context_data(self, **kwargs):
+        """Добавляем категорию в контекст"""
+        context = super().get_context_data(**kwargs)
+        category_id = self.kwargs['pk']
+        context['category'] = get_object_or_404(Category, id=category_id)
+        return context
